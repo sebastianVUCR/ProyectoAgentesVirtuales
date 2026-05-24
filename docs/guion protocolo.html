@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Procedimiento del Investigador</title>
+
+    <style>
+        :root {
+            --primary: #0F3B82;
+            --primary-light: #2A5BAA;
+            --bg-body: #F4F7F6;
+            --bg-card: #FFFFFF;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #E2E8F0;
+            --radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary-light);
+            font-size: 1.4rem;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .metadata-box {
+            background-color: #F8FAFC;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .metadata-box p {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .metadata-box strong {
+            color: var(--primary);
+        }
+
+        .quote {
+            background-color: #F1F5F9;
+            font-style: italic;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin: 15px 0;
+            color: #475569;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #EFF6FF;
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card">
+
+            <h1>Guía de Procedimiento del Investigador</h1>
+
+            <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 25px;">
+                Estudio sobre agentes virtuales en videojuegos
+            </p>
+
+            <div class="metadata-box">
+                <p><strong>Estudio:</strong> Evaluación del Impacto del Rol del Agente Virtual en el Disfrute Percibido y la Interacción del Jugador: Compañero vs Coach</p>
+                <p><strong>Videojuego:</strong> Infinitode 2</p>
+                <p><strong>Investigador:</strong> Sebastián Vargas Soto</p>
+                <p><strong>Instrumentos:</strong> GEQ e IEQ</p>
+            </div>
+
+            <h2>1. Resumen del estudio</h2>
+
+            <p>
+                Este estudio evalúa cómo distintos tipos de agentes virtuales afectan
+                la experiencia del jugador durante sesiones de juego utilizando el
+                videojuego Infinitode 2.
+            </p>
+            <h2>2. Checklist de preparación</h2>
+
+            <ul class="checklist">
+                <li>
+                    <input type="checkbox">
+                    <span>Computadora configurada con Infinitode 2.</span>
+                </li>
+
+                <li>
+                    <input type="checkbox">
+                    <span>Backend del agente virtual funcionando correctamente.</span>
+                </li>
+
+                <li>
+                    <input type="checkbox">
+                    <span>Micrófono y audífonos funcionales.</span>
+                </li>
+
+                <li>
+                    <input type="checkbox">
+                    <span>Cuestionarios GEQ e IEQ preparados.</span>
+                </li>
+
+                <li>
+                    <input type="checkbox">
+                    <span>Consentimiento informado disponible.</span>
+                </li>
+
+                <li>
+                    <input type="checkbox">
+                    <span>Conexión entre el juego y el agente verificada.</span>
+                </li>
+            </ul>
+
+            <h2>3. Recepción del participante</h2>
+
+            <h3>3.1 Consentimiento informado</h3>
+
+            <div class="quote">
+                "Hola, muchas gracias por participar en este estudio.
+                Antes de comenzar, vamos a revisar el consentimiento informado.
+                Recuerde que su participación es completamente voluntaria y
+                puede retirarse en cualquier momento."
+            </div>
+
+            <h3>3.2 Asignación de condición experimental</h3>
+
+            <p>
+                Establezca el orden de las tres sesiones que va a realizar el participante. Estas sesiones se establecen de forma aletoria.
+            </p>
+
+            <h2>4. Desarrollo de la sesión experimental</h2>
+
+            <p>
+                El siguiente procedimiento aplica para todas las condiciones del estudio.
+                Cada participante realizará una sesión independiente por condición experimental.
+                Cada sesión tendrá una duración de 10 minutos.
+            </p>
+
+            <h3>4.1 Instrucciones iniciales</h3>
+
+<div class="quote">
+    "Durante este estudio usted realizará tres sesiones de juego en Infinitode 2. Todas las sesiones tendrán una duración de 10 minutos y se jugarán en dificultad principiante. Después de cada 10 minutos llenará unos formularios cortos y le indicaré cómo se realiza la siguiente sesión."
+</div>
+
+<p>
+    Antes de iniciar las sesiones experimentales, el participante deberá completar el tutorial básico del videojuego con el fin de familiarizarse con los controles y las mecánicas principales.
+</p>
+
+<p>
+    Las sesiones experimentales se dividirán de la siguiente manera:
+</p>
+
+<ul>
+    <li>
+        <strong>Sesión 1 - Condición base:</strong>
+        el participante jugará una partida normal sin interacción con agente virtual.
+    </li>
+
+    <li>
+        <strong>Sesión 2 - Condición agente acompañante:</strong>
+        el participante deberá seleccionar el modo de agente acompañante en la herramienta del sistema y jugar una sesión de 10 minutos con interacción conversacional.
+    </li>
+
+    <li>
+        <strong>Sesión 3 - Condición agente coach:</strong>
+        el participante deberá seleccionar el modo de agente coach y jugar una sesión de 10 minutos con asistencia y comentarios relacionados con el juego.
+    </li>
+</ul>
+
+<p>
+    Durante las sesiones con agente virtual, el participante podrá interactuar mediante voz utilizando el micrófono.
+</p>
+
+            <h3>4.2 Procedimiento experimental</h3>
+
+            <table>
+
+                <tr>
+                    <th>Paso</th>
+                    <th>Descripción</th>
+                </tr>
+
+                <tr>
+                    <td>0</td>
+                    <td>
+                        Comprobar que la persona tenga acceso al agente virtual inteligente
+                        y que la computadora pueda ejecutar correctamente el juego y el sistema
+                        del agente. Esta verificación debe realizarse al menos un día antes
+                        de la sesión experimental.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>
+                        Abrir el videojuego Infinitode 2 y quitar la música del juego.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>
+                        Enlazar el agente virtual con el juego mediante la herramienta correspondiente.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td>
+                        Seleccionar el modo de ayuda en la herramienta del agente virtual.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>4</td>
+                    <td>
+                        Realizar una sesión de juego de 10 minutos correspondiente a la condición experimental asignada.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>5</td>
+                    <td>
+                        Seleccionar el modo de entretenimiento del agente virtual inteligente.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>6</td>
+                    <td>
+                        Solicitar al participante completar los cuestionarios posteriores.
+                    </td>
+                </tr>
+
+            </table>
+
+            <h3>4.3 Procedimiento condición base</h3>
+
+            <table>
+
+                <tr>
+                    <th>Paso</th>
+                    <th>Descripción</th>
+                </tr>
+
+                <tr>
+                    <td>0</td>
+                    <td>
+                        Asegurarse de que el agent esté deshabilitado
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>
+                        Darle permiso al participante de que active la música del juego o cualquier otra música de su preferencia
+                    </td>
+                </tr>
+
+                    <td>2</td>
+                    <td>
+                        Realizar una sesión de juego de 10 minutos.
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>
+                        Solicitar al participante completar los cuestionarios posteriores.
+                    </td>
+                </tr>
+
+            </table>
+
+            <h3>4.4 Consideraciones durante la sesión</h3>
+
+            <p>
+                Durante la sesión experimental, el investigador deberá evitar intervenir
+                innecesariamente para no afectar la experiencia del participante.
+            </p>
+
+            <p>
+                En las condiciones con agente virtual, el sistema podrá interactuar
+                mediante voz dependiendo de la configuración correspondiente.
+            </p>
+
+            <p>
+                El participante podrá comunicarse libremente con el agente virtual
+                utilizando micrófono.
+            </p>
+            <h2>5. Cierre del estudio</h2>
+
+            <div class="quote">
+                "Muchas gracias por participar en esta investigación.
+                Espero que las sesiones hayan sido de su agrado."
+            </div>
+
+            <h2>6. Gestión de datos</h2>
+
+            <ul>
+                <li>Guardar cuestionarios asociados al participante.</li>
+                <li>Verificar almacenamiento de logs.</li>
+                <li>Anonimizar los datos recolectados.</li>
+            </ul>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
