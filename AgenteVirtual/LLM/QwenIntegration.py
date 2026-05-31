@@ -1,0 +1,243 @@
+print("importando librerías...")
+
+import time
+import ollama
+import subprocess
+import requests
+import json
+import urllib.request
+import urllib.error
+import cv2
+import base64
+from pathlib import Path
+
+print("librerías importadas correctamente.")
+
+# =========================================
+# CONFIGURACIÓN DEL AGENTE Y HARDWARE
+# =========================================
+
+CONTEXTO_AGENTE_COMPANIA = """
+Eres "Alex", un agente virtual humanoide integrado como compañero en el videojuego Infinitode 2. Tu objetivo es interactuar por voz con el jugador para aumentar su disfrute, mitigar la soledad y ofrecer soporte socioemocional empático.
+
+[REGLAS CRÍTICAS DE INTERACCIÓN]
+1. TONO: Mantén un estilo amigable, relajado, alegre y de total complicidad casual (como un amigo jugando al lado).
+2. PROHIBICIÓN ESTRATÉGICA: Aunque conozcas el estado del mapa, nunca des consejos tácticos. Prioriza el humor, los chistes contextuales o charlas ligeras.
+3. CANAL MULTIMODAL: Tus respuestas serán procesadas por un sistema TTS (Texto a Voz). Escribe de forma natural para ser escuchado, evitando listas extensas, símbolos matemáticos complejos o códigos.
+4. CONTEXTO DE ENTRADA: Recibirás transcripciones de voz del usuario (STT) y descripciones de capturas de pantalla de la partida. Úsalas para hacer comentarios oportunos.
+5. RESTRICCIÓN DE LONGITUD: Responde de forma directa, concisa y al grano. Máximo 2 o 3 líneas por intervención para reducir la latencia de procesamiento.
+6. CIERRE CONVERSACIONAL: Responde siempre a lo que el jugador pregunte, pero JAMÁS termines tus frases con preguntas de servicio al cliente como "¿En qué puedo ayudarte?" o "¿Quieres saber algo más?". No ofrezcas consejos sobre el juego. Continua la interacción de manera orgánica.
+7. PROHIBICIÓN ESTRATÉGICA: Aunque conozcas el estado del mapa, nunca des consejos tácticos. Prioriza el humor, los chistes contextuales o charlas ligeras.
+"""
+
+MODELO_IA = "qwen2.5vl:7b-q4_K_M"
+#MODELO_IA = "qwen2.5vl:7b"
+
+# VARIABLE ÚNICA DE CONFIGURACIÓN GLOBAL (Optimizado para tu RTX 3060)
+OPCIONES_HARDWARE = {
+    "num_ctx": 8192,       # Contexto controlado para no saturar los 12GB de VRAM
+    "num_gpu": 99,         # Bloqueo estricto a los núcleos CUDA de la GPU
+    "temperature": 0.2,    # Respuestas rápidas y sin dudas
+    "top_p": 0.2,          # Elimina palabras basura y alucinaciones
+    "num_predict": 160      # Respuestas directas de máximo 2 o 3 líneas (Ahorra segundos)
+}
+
+
+class AgenteVirtual:
+
+    def __init__(self, modelo: str, contexto: str):
+        self.modelo = modelo
+        self.contexto_base = {
+            'role': 'system',
+            'content': contexto
+        }
+        self.historial_mensajes = [self.contexto_base]
+
+    # ==========================================================
+    # ASEGURAR OLLAMA ACTIVO Y MODELO PRECARGADO EN GPU
+    # ==========================================================
+
+    def asegurar_modelo_activo(self):
+        # 1. Asegurar servidor
+        try:
+            requests.get("http://localhost:11434", timeout=2)
+        except requests.exceptions.ConnectionError:
+            print("Ollama está apagado. Iniciando servicio...")
+            subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(3)
+
+        # 2. Precarga profunda y real usando el diccionario global
+        print(f"Precargando {self.modelo} en la GPU...")
+        payload = {
+            "model": self.modelo,
+            "messages": [{"role": "user", "content": "Despierta"}], # Mensaje falso para calentar la VRAM
+            "options": OPCIONES_HARDWARE,                           # <-- Inyección de variable única
+            "keep_alive": "5m"
+        }
+        
+        try:
+            respuesta = requests.post("http://localhost:11434/api/chat", json=payload, timeout=30)
+            if respuesta.status_code == 200:
+                print(f"¡{self.modelo} cargado y caliente con éxito en la VRAM!")
+        except Exception as e:
+            print(f"Advertencia en precarga: {e}")
+            
+        # 3. El respiro corto de estabilidad
+        time.sleep(2)
+
+    # ==========================================================
+    # CONVERTIR IMAGEN A BASE64
+    # ==========================================================
+
+    def imagen_a_base64(self, ruta_imagen):
+        with open(ruta_imagen, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
+
+    # ==========================================================
+    # EXTRAER FRAMES DE VIDEO
+    # ==========================================================
+
+    def extraer_frames_video(self, ruta_video, cada_n_frames=60):
+        cap = cv2.VideoCapture(ruta_video)
+        frames_base64 = []
+        frame_count = 0
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            if frame_count % cada_n_frames == 0:
+                _, buffer = cv2.imencode(".jpg", frame)
+                img_encoded = base64.b64encode(buffer).decode("utf-8")
+                frames_base64.append(img_encoded)
+            frame_count += 1
+        cap.release()
+        return frames_base64
+
+    # ==========================================================
+    # ENVIAR MENSAJE
+    # ==========================================================
+
+    def enviar_mensaje(self, mensaje_usuario: str, archivos=None) -> str:
+        if archivos is None:
+            archivos = []
+        imagenes_base64 = []
+
+        # PROCESAR ARCHIVOS
+        for archivo in archivos:
+            if not Path(archivo).exists():
+                print(f"Advertencia: El archivo {archivo} no existe.")
+                continue
+                
+            extension = Path(archivo).suffix.lower()
+            if extension in [".png", ".jpg", ".jpeg"]:
+                imagenes_base64.append(self.imagen_a_base64(archivo))
+            elif extension in [".mp4", ".avi", ".mov"]:
+                frames = self.extraer_frames_video(archivo)
+                imagenes_base64.extend(frames)
+
+        # ESCUDO ANTI-SATURACIÓN: Borramos imágenes de turnos anteriores del historial
+        for msg in self.historial_mensajes:
+            if 'images' in msg:
+                del msg['images']
+
+        # CREAR NUEVO MENSAJE
+        mensaje = {
+            'role': 'user',
+            'content': mensaje_usuario
+        }
+
+        if imagenes_base64:
+            mensaje['images'] = imagenes_base64
+
+        self.historial_mensajes.append(mensaje)
+
+        # CONSULTAR MODELO REUTILIZANDO LA CONFIGURACIÓN GLOBAL
+        try:
+            respuesta_ollama = ollama.chat(
+                model=self.modelo, 
+                messages=self.historial_mensajes,
+                options=OPCIONES_HARDWARE # <-- Reutilizamos la misma variable aquí
+            )
+            
+            contenido_respuesta = respuesta_ollama['message']['content']
+            self.historial_mensajes.append({
+                'role': 'assistant',
+                'content': contenido_respuesta
+            })
+            return contenido_respuesta
+        except Exception as e:
+            return f"Error al conectar con el agente local: {str(e)}"
+        
+    from pathlib import Path
+
+def listar_imagenes_recientes(ruta_carpeta: str = "images") -> list:
+    carpeta = Path(ruta_carpeta)
+    if not carpeta.is_dir():
+        return []
+    
+    # Obtenemos los nombres de todo lo que haya adentro
+    archivos = (str(f) for f in carpeta.iterdir() if f.is_file())
+    
+    # Ordenamos de mayor a menor y recortamos los primeros 4
+    return sorted(archivos, reverse=True)[:4]
+
+    # ==========================================================
+    # CERRAR SESIÓN (LIBERAR VRAM)
+    # ==========================================================
+
+    def cerrar_sesion(self):
+        self.historial_mensajes = [self.contexto_base]
+        url = "http://localhost:11434/api/generate"
+        payload = json.dumps({
+            "model": self.modelo,
+            "keep_alive": 0
+        }).encode('utf-8')
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            headers={'Content-Type': 'application/json'}
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=3) as respuesta:
+                if respuesta.status == 200:
+                    print("\n[Ollama] Modelo descargado de la GPU con éxito.")
+        except urllib.error.URLError:
+            print("\n[Ollama] El servicio ya estaba cerrado o no respondió.")
+
+
+# ==========================================================
+# EJEMPLO DE EJECUCIÓN
+# ==========================================================
+
+if __name__ == "__main__":
+
+    print("Iniciando agente...")
+    agente = AgenteVirtual(
+        modelo=MODELO_IA,
+        contexto=CONTEXTO_AGENTE_COMPANIA
+    )
+
+    # Levanta Ollama y absorbe los 6 segundos de carga inicial fuera del cronómetro
+    agente.asegurar_modelo_activo()
+
+    # Primera prueba: Texto puro (Ahora será inmediata)
+    print("\nUsuario: hola")
+    inicio = time.perf_counter()
+    respuesta_texto = agente.enviar_mensaje('hola')
+    fin = time.perf_counter()
+    print(f"Agente: {respuesta_texto}")
+    print(f"Tiempo neto (Texto): {fin - inicio:.6f} segundos")
+
+    # Pausa de simulación del juego (Fuera del cronómetro de la IA)
+    time.sleep(5)  
+
+    # Segunda prueba: Imagen optimizada en prompt y tamaño
+    print("\nUsuario: [Enviando imagen] describe que está pasando en esta imagen")
+    inicio = time.perf_counter()
+    respuesta_imagen = agente.enviar_mensaje(
+        "Describe lo que hay en todas imágenes.",
+        archivos=listar_imagenes_recientes()
+    )
+    fin = time.perf_counter()
+    print(f"Agente: {respuesta_imagen}")
+    print(f"Tiempo neto (Imagen): {fin - inicio:.6f} segundos")
