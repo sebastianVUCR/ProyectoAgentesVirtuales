@@ -1,0 +1,11 @@
+ejecutar setup.bat en la raíz si es necesario establecer la variables de ambiente de ollama y del manejo de memoria
+
+python -m venv env
+.\env\Scripts\activate.bat
+pip install -r requirements.txt
+python.exe -m pip install --upgrade pip
+python -m pip install --upgrade pip setuptools wheel
+
+ cd .\LLM\
+ python .\MainController.py 
+
