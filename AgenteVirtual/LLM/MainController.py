@@ -50,7 +50,7 @@ class ControladorJuegoIA:
             
             print(f"🧠 Consultando a Qwen ({MODELO_IA})...")
             inicio_ia = time.perf_counter()
-            
+            texto_usuario =  "El usuario te estadiciendo lo siguiente, si es una pregunta respóndele: " + texto_usuario
             respuesta_ia = self.agente_llm.enviar_mensaje(texto_usuario, archivos=listar_imagenes_recientes())
             
             fin_ia = time.perf_counter()
@@ -68,8 +68,7 @@ class ControladorJuegoIA:
         t_grabar = threading.Thread(target=self.stt._hilo_grabacion, args=(0.013, 1.5))
         t_procesar = threading.Thread(target=self.stt._hilo_procesamiento, args=("es",))
         
-        # 3. NUEVO HILO: Ejecución Asíncrona del Recolector de Datos (Capturas de Pantalla)
-        # Correrá en segundo plano y guardará las imágenes cada 10 segundos de forma independiente
+        # Correrá en segundo plano y guardará las imágenes cada 20 segundos de forma independiente
         t_capturas = threading.Thread(target=generate_data)
         
         # Marcamos todos como hilos daemon para que mueran si cerramos el programa principal

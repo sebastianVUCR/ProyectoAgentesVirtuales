@@ -51,18 +51,21 @@ def limpiar_carpeta_images(ruta_carpeta="images"):
     except Exception as e:
         print(f"⚠️ No se pudo limpiar la carpeta de imágenes: {e}")
 
+
 def generate_data():
-    limpiar_carpeta_images()
-    sleep_time = 20
-    
-    file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
-    capturar_pantalla(nombre_archivo=file_name)
-    time.sleep(sleep_time)
-    
-    
-    file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
-    capturar_pantalla(nombre_archivo=file_name)
-    return file_name
+
+    while True:
+        limpiar_carpeta_images()
+        sleep_time = 20
+        
+        file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
+        capturar_pantalla(nombre_archivo=file_name)
+        time.sleep(sleep_time)
+        
+        
+        file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
+        capturar_pantalla(nombre_archivo=file_name)
+
 
 # if __name__ == "__main__":
 #     time.sleep(3) 
