@@ -91,7 +91,6 @@ class ControladorJuegoIA:
             print("\n🛑 Apagando el controlador central...")
             self.ejecutando = False
             self.stt.ejecutando = False
-            self.agente_llm.cerrar_sesion()
             print("👋 Sistema cerrado correctamente.")
 
     def leer_configuracion(self, etiqueta="modo"):
