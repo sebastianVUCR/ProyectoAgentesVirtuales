@@ -8,7 +8,7 @@ from pathlib import Path
 import threading
 
 
-def capturar_pantalla(nombre_archivo="captura.jpg"):
+def capturar_pantalla(nombre_archivo="captura.jpg", modo="compania"):
     carpeta_destino = "images"
     if not os.path.exists(carpeta_destino):
         os.makedirs(carpeta_destino)
@@ -22,8 +22,13 @@ def capturar_pantalla(nombre_archivo="captura.jpg"):
         
         imagen = Image.frombytes("RGB", captura_raw.size, captura_raw.bgra, "raw", "BGRX")
         
-        ancho_fijo = 448
-        alto_fijo = 252
+        if modo == "coach":
+            ancho_fijo = 672
+            alto_fijo = 378
+        else:
+            ancho_fijo = 448
+            alto_fijo = 252
+    
         imagen = imagen.resize((ancho_fijo, alto_fijo), Image.Resampling.BILINEAR)
         
         imagen.save(ruta_final_archivo, "JPEG", quality=75)
@@ -52,19 +57,21 @@ def limpiar_carpeta_images(ruta_carpeta="images"):
         print(f"⚠️ No se pudo limpiar la carpeta de imágenes: {e}")
 
 
-def generate_data():
+def generate_data(modo="compania"):
 
     while True:
         limpiar_carpeta_images()
         sleep_time = 20
         
         file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
-        capturar_pantalla(nombre_archivo=file_name)
+        capturar_pantalla(nombre_archivo=file_name, modo=modo)
         time.sleep(sleep_time)
         
         
         file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
-        capturar_pantalla(nombre_archivo=file_name)
+        capturar_pantalla(nombre_archivo=file_name, modo=modo)
+
+        time.sleep(sleep_time)
 
 
 # if __name__ == "__main__":
