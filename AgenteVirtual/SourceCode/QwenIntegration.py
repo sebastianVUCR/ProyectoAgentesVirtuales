@@ -59,16 +59,14 @@ Nunca menciones unidades ni enemigos aereos porque no existen.
 Nivel 1.1 Solo Basic.
 Nivel 1.2 Desbloquea Sniper. Disponibles: Basic, Sniper.
 Nivel 1.3 Desbloquea Cannon. Disponibles: Basic, Sniper, Cannon.
-Nivel 1.4 Desbloquea Freezing. Disponibles: Basic, Sniper, Cannon, Freezing.
-Nivel 1.5 Desbloquea Antiair. Disponibles: Basic, Sniper, Cannon, Freezing, Antiair.
-PROHIBIDO mencionar: Multishot, Minigun, Venom, Blast.
+PROHIBIDO mencionar: Multishot, Minigun, Venom, Blast, Freezing y Antiair.
 
-[COMPATIBILIDAD TORRES Y ENEMIGOS
-Basic: Alta eficacia contra Regular azul. Ineficaz contra Armored.
-Sniper nivel 1.2: Alto daño, lento. Alta eficacia contra Strong púrpura y Jefes. Ineficaz contra grupos Fast.
-Cannon nivel 1.3: Daño área. Alta eficacia contra grupos Regular y Fast amarillo. Cero daño aéreos.
-Freezing nivel 1.4: Cero daño, ralentiza. Colocar inicio curvas.
-Antiair nivel 1.5: Solo ataca Heli aéreos. Colocar solo ante oleada aérea.
+[GUÍA POR NIVEL TORRES Y ENEMIGOS]
+Basic: Alta eficacia contra Regular azul.
+Sniper nivel 1.2: Pon una torre Basic justo en la esquina interior de la primera curva grande. Esto maximiza su tiempo de disparo mientras los enemigos giran a su alrededor.
+Cannon nivel 1.3: Usa torres Basic (configurada en modo de ataque First o Fastest) y Sniper si necesitas daño a larga distancia.
+nivel 1.4: El Cañón dispara lento pero su daño explosivo limpia grupos enteros. Configura el Cañón en Random (Aleatorio) o Strongest (Más fuerte) para que apunte al centro del grupo y la explosión dañe a la mayor cantidad de enemigos posibles
+nivel 1.5: Al principio, invierte en 2 torres Basic bien ubicadas en las primeras curvas para asegurar los ingresos tempranos. Coloca un Cañón en el centro para ablandar los grupos compactos y usa una Sniper al fondo.
 
 [ECONOMÍA Y ESTRATEGIA]
 Eficiente: Construir 2 o 3 torres nivel medio. Ineficiente: Subir una sola torre al máximo.
