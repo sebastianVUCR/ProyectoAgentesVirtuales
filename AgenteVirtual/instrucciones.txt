@@ -1,3 +1,5 @@
+#instalar dependencias: ollama, steam e Inifitode 2
+
 ejecutar setup.bat en la raíz si es necesario establecer la variables de ambiente de ollama y del manejo de memoria
 
 python -m venv env
@@ -10,5 +12,10 @@ python.exe -m pip install --upgrade pip
 python -m pip install --upgrade pip setuptools wheel
 
  cd .\SourceCode\
- python .\MainController.py 
+
+#Abrir Infinitode 2 en la pantalla principal, ir a ajustes (opción con dibujo de engrane) y luego desactivar la pantalla completa y la música del juego.
+
+python .\MainController.py 
+
+
 
