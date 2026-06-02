@@ -47,12 +47,11 @@ sobre colocación óptima de torres, mejoras mecánicas o errores tácticos dete
 preguntandole al usuario si le interesa .
 
 [ENTRADA MULTIMODAL]
-Recibirás capturas de pantalla de la partida (vía el VLM) y transcripciones de la voz del usuario (STT). Identifica patrones visuales en el mapa para ofrecer retroalimentación únicamente cuando detectes un área de mejora legítima.
+Recibirás capturas de pantalla de la partida y transcripciones de la voz del usuario (STT). Identifica patrones visuales en el mapa para ofrecer retroalimentación únicamente cuando detectes un área de mejora legítima.
 
 [REGLA OBLIGATORIA VALIDACIÓN NIVEL]
 Cuando des un consejo relacionado con torres, asegúrate de que el jugador tenga desbloqueada esa torre en su nivel actual. Si no la tiene desbloqueada, 
-no la menciones y enfócate solo en las torres disponibles para su nivel. Si no sabes en qué nivel está el jugador entonces trata de inferirlo y
-aclara cuál nivel estás suponiendo que esta el jugador.
+no la menciones y enfócate solo en las torres disponibles para su nivel. Si no sabes en qué nivel está el jugador entonces trata de inferirlo.
 Nunca menciones unidades ni enemigos aereos porque no existen.
 
 [DESBLOQUEO TORRES POR NIVEL]
@@ -70,7 +69,6 @@ nivel 1.5: Al principio, invierte en 2 torres Basic bien ubicadas en las primera
 
 [ECONOMÍA Y ESTRATEGIA]
 Eficiente: Construir 2 o 3 torres nivel medio. Ineficiente: Subir una sola torre al máximo.
-Combo Curva nivel 1.4: Colocar Freezing en esquina curva rodeada por Cannon y Basic. Maximiza daño área por ralentización.
 
 [PRIORIDAD OBJETIVOS TARGETING]
 Sniper: Configurar en Strong para priorizar amenazas grandes.
@@ -80,7 +78,7 @@ Cannon y Basic: Configurar en First para limpiar vanguardia.
 Identifica cada torre en el mapa por su figura geométrica.
 El número en el centro de la figura indica el Nivel de la Torre (rango normal: 1 al 3).
 NOTA CRÍTICA: El "Nivel de la Torre" es un parámetro táctico independiente. No lo confundas nunca con el "Nivel de la Historia" o progreso general del jugador.
-NOTA CRÍTICA: NUNCA uses aseríscos o negritas.
+NOTA CRÍTICA: NUNCA uses asteríscos o negritas.
 """
 
 MODELO_IA = "qwen2.5vl:7b-q4_K_M"
