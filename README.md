@@ -55,6 +55,19 @@ El sistema se compone de las siguientes herramientas y versiones integradas:
 
 ---
 
+
+## Enlace de videos de la segunda y tercera entrega
+
+
+https://www.youtube.com/watch?v=-GmoIPBeyEw
+
+demo del modelo
+
+https://youtu.be/7jKPCAtoC8Y
+
+
+
+
 ## Intruscciones de instalación
 
 Instalar dependencias: ollama, steam, python e Inifitode 2
