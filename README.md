@@ -52,3 +52,30 @@ El sistema se compone de las siguientes herramientas y versiones integradas:
     * Un juego de estrategia de defensa de torres (*tower defense*). Su diseño minimalista exige una carga cognitiva baja en los niveles iniciales pero retiene una alta profundidad técnica en árboles de habilidades. Esto permite evaluar con rigor científico el impacto de la asistencia del agente (Coach vs. Compañero) bajo escenarios controlados, comparando métricas reales frente a estudios previos con juegos de alta carga cognitiva.
 * **Sistema Operativo Base:** `Windows 11`
     * Plataforma de desarrollo elegida por su compatibilidad nativa con el ecosistema de videojuegos, controladores de audio y soporte para la función de *Picture-in-Picture* (PiP) para superponer el agente virtual sobre el juego.
+
+---
+
+## Intruscciones de instalación
+
+Instalar dependencias: ollama, steam, python e Inifitode 2
+
+Ejecutar setup.bat en la raíz si es necesario establecer la variables de ambiente de ollama y del manejo de memoria.
+
+```
+python -m venv env
+
+#activar ambiente virtual
+.\env\Scripts\activate.bat
+
+python.exe -m pip install --upgrade pip
+python -m pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+
+cd .\SourceCode\
+```
+
+Abrir Infinitode 2 en la pantalla principal, ir a ajustes (opción con dibujo de engrane) y luego desactivar la pantalla completa y la música del juego.
+
+```
+python .\MainController.py 
+```
