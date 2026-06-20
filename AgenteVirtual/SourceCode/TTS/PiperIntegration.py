@@ -39,7 +39,7 @@ class ReproductorTTS:
         # Variable para controlar el hilo de reproducción
         self.hilo_reproduccion = None
 
-    def reproducir_texto(self, texto_input):
+    def reproducir_texto(self, texto_input, detener_animacion=None):
         """Genera el audio con Piper en la carpeta 'audios' y lo reproduce en segundo plano."""
         self.detener()
 
@@ -84,7 +84,7 @@ class ReproductorTTS:
             data, fs = sf.read(self.archivo_actual)
             
             # Iniciamos la reproducción en un hilo separado
-            self.hilo_reproduccion = threading.Thread(target=self._reproducir_async, args=(data, fs, self.archivo_actual))
+            self.hilo_reproduccion = threading.Thread(target=self._reproducir_async, args=(data, fs, self.archivo_actual, detener_animacion))
             self.hilo_reproduccion.daemon = True
             self.hilo_reproduccion.start()
 
@@ -94,11 +94,12 @@ class ReproductorTTS:
         except Exception as e:
             print(f"Ocurrió un error inesperado al generar: {e}")
 
-    def _reproducir_async(self, data, fs, ruta_archivo):
+    def _reproducir_async(self, data, fs, ruta_archivo, detener_animacion=None):
         """Método interno que corre en el hilo secundario."""
         print("-> Reproduciendo audio... ")
         sd.play(data, fs)
         sd.wait()
+        detener_animacion("idle")
         print("-> Reproducción finalizada por completo.")
         
         # Al terminar de reproducir de forma natural, borramos el archivo de la carpeta /audios

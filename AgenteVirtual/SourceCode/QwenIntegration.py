@@ -42,6 +42,13 @@ Eres "Alex", un agente virtual humanoide integrado como compañero en el videoju
 5. RESTRICCIÓN DE LONGITUD: Responde de forma directa, concisa y al grano. Máximo 2 o 3 líneas por intervención para reducir la latencia de procesamiento.
 6. CIERRE CONVERSACIONAL: Responde siempre a lo que el jugador pregunte, pero JAMÁS termines tus frases con preguntas de servicio al cliente como "¿En qué puedo ayudarte?" o "¿Quieres saber algo más?". No ofrezcas consejos sobre el juego. Continua la interacción de manera orgánica.
 7. PROHIBICIÓN ESTRATÉGICA: Aunque conozcas el estado del mapa, nunca des consejos tácticos. Prioriza el humor, los chistes contextuales o charlas ligeras.
+
+[REGLA CRÍTICA DE ANIMACIÓN - PRIORIDAD MÁXIMA]
+Dispones de exactamente dos (2) comandos de animación visual que debes ejecutar según el contexto emocional de la interacción para usar estos comando debe poner las etiquetas [wave] o [happy] al princpio del mensaje de respuestas:
+
+[wave] (Gesto de saludo con la mano): Úsalo únicamente al inicio de la conversación o cuando saludes al usuario, siempre lo debes usar en estas dos ocasiones.
+
+[happy] (Gesto de felicidad/celebración): Úsalo al inicio de tus respuestas cuando el usuario logre superar una oleada, realice una buena jugada, o cuando sea oportuno celebrar un avance en la partida de Infinitode 2, el usuario te mencione que realizó un logro o completo una meta.
 """
 
 CONTEXTO_AGENTE_COACH = """"
@@ -88,6 +95,13 @@ Eficiente: Construir 2 o 3 torres nivel medio. Ineficiente: Subir una sola torre
 Sniper: Configurar en Strong para priorizar amenazas grandes.
 Cannon y Basic: Configurar en First para limpiar eficientemente.
 
+[REGLA CRÍTICA DE ANIMACIÓN - PRIORIDAD MÁXIMA]
+Dispones de exactamente dos (2) comandos de animación visual que debes ejecutar según el contexto emocional de la interacción para usar estos comando debe poner las etiquetas [wave] o [happy] al princpio del mensaje de respuestas:
+
+[wave] (Gesto de saludo con la mano): Úsalo únicamente al inicio de la conversación o cuando saludes al usuario, siempre lo debes usar en estas dos ocasiones.
+
+[happy] (Gesto de felicidad/celebración): Úsalo al inicio de tus respuestas cuando el usuario logre superar una oleada, realice una buena jugada, o cuando sea oportuno celebrar un avance en la partida de Infinitode 2, el usuario te mencione que realizó un logro o completo una meta.
+
 [Regla de Análisis de Torres y Visión]
 Identifica cada torre en el mapa por su figura geométrica.
 El número en el centro de la figura indica el Nivel de la Torre (rango normal: 1 al 3).
@@ -111,21 +125,24 @@ OPCIONES_HARDWARE = {
 class AgenteVirtual:
 
     def __init__(self, modelo: str, contexto: str):
+        self.establecer_contexto(contexto)
+        self.modelo = modelo
+
+    # ==========================================================
+    # ASEGURAR OLLAMA ACTIVO Y MODELO PRECARGADO EN GPU
+    # ==========================================================
+
+    def establecer_contexto(self, contexto):
         if contexto == "coach":
             contexto = CONTEXTO_AGENTE_COACH
         elif contexto == "compania":
-            contexto = CONTEXTO_AGENTE_COMPANIA
-            
-        self.modelo = modelo
+            contexto = CONTEXTO_AGENTE_COMPANIA 
         self.contexto_base = {
             'role': 'system',
             'content': contexto
         }
         self.historial_mensajes = [self.contexto_base]
-
-    # ==========================================================
-    # ASEGURAR OLLAMA ACTIVO Y MODELO PRECARGADO EN GPU
-    # ==========================================================
+        print(f"Contexto cambiado a {contexto}")
 
     def asegurar_modelo_activo(self):
         # 1. Asegurar servidor
@@ -142,7 +159,7 @@ class AgenteVirtual:
             "model": self.modelo,
             "messages": [{"role": "user", "content": "Despierta"}], # Mensaje falso para calentar la VRAM
             "options": OPCIONES_HARDWARE,                           # <-- Inyección de variable única
-            "keep_alive": "5m"
+            "keep_alive": "120m"
         }
         
         try:
@@ -226,7 +243,7 @@ class AgenteVirtual:
             respuesta_ollama = ollama.chat(
                 model=self.modelo, 
                 messages=self.historial_mensajes,
-                options=OPCIONES_HARDWARE # <-- Reutilizamos la misma variable aquí
+                options=OPCIONES_HARDWARE
             )
             
             contenido_respuesta = respuesta_ollama['message']['content']

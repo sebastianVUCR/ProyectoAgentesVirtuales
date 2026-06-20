@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Experiencia de Juego</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 40px;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 8px;
+        }
+        .info-block {
+            background-color: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+        .question-group {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .options-scale {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .options-scale label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .options-scale input[type="radio"] {
+            margin-right: 6px;
+        }
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-csv {
+            background-color: #2f855a;
+        }
+        .btn-csv:hover {
+            background-color: #22543d;
+        }
+        .btn-firebase {
+            background-color: #e67e22;
+        }
+        .btn-firebase:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cuestionarios de Experiencia de Juego</h1>
+    
+    <form id="gameExperienceForm">
+
+        <h2>Cuestionario de Experiencia de Juego – Módulo Central</h2>
+        <div class="question-group">
+            <span class="question-text">¿A cuál experimento corresponde este cuestionario?</span>
+            <select name="GEQ_Experimento" required>
+                <option value="" disabled selected>Selecciona una opción...</option>
+                <option value="Sin agente">a. Sin agente</option>
+                <option value="Con agente acompañante">b. Con agente acompañante</option>
+                <option value="Con agente coach">c. Con agente coach</option>
+            </select>
+        </div>
+
+        <div class="info-block">
+            Por favor, indica cómo te sentiste mientras jugabas al juego para cada uno de los elementos, en la siguiente escala:<br>
+            <strong>0</strong> = para nada | <strong>1</strong> = un poco | <strong>2</strong> = moderadamente | <strong>3</strong> = bastante | <strong>4</strong> = extremadamente
+        </div>
+
+        <div id="geq-questions"></div>
+
+        <h2>Inmersive Experience Questionnaire (IEQ)</h2>
+        <div class="info-block">
+            Por favor, responde a las siguientes preguntas indicando tu nivel de acuerdo o la opción que mejor describa tu experiencia.
+        </div>
+        <div id="ieq-questions"></div>
+
+        <h2>Preguntas Adicionales</h2>
+        <div id="additional-questions"></div>
+
+        <div class="question-group" style="border-bottom: none;">
+            <span class="question-text">Observaciones Generales (Opcional)</span>
+            <textarea name="Observaciones_Generales" placeholder="Escribe aquí cualquier comentario, sugerencia o problema que hayas tenido durante el juego..."></textarea>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn-csv" onclick="downloadCSV()">Descargar CSV de Respuestas</button>
+            <button type="button" class="btn-firebase" onclick="uploadToFirebase()">Subir a Firebase</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    const geqItems = [
+        "Me sentí satisfecho/a", "Me sentí habilidoso/a", "Me interesó la historia del juego",
+        "Pensé que era divertido", "Estaba completamente absorto/a con el juego", "Me sentí feliz",
+        "Me puso de mal humor", "Pensé en otras cosas", "Lo encontré cansado / tedioso",
+        "Me sentí competente", "Pensé que era difícil", "Era estéthetically agradable",
+        "Olvidé todo lo que me rodeaba", "Me sentí bien", "Se me daba bien",
+        "Me sentí aburrido/a", "Me sentí exitoso/a", "Me sentí imaginativo/a",
+        "Sentí que podía explorar cosas", "Lo disfruté", "Fui rápido/a en alcanzar los objetivos del juego",
+        "Me sentí molesto/a / enfadado/a", "Me sentí presiónado/a", "Me sentí irritable",
+        "Perdí la noción del tiempo", "Me sentí desafiado/a", "Lo encontré impresionante",
+        "Estaba profundamente concentrado/a en el juego", "Me sentí frustrado/a", "Se sintió como una experiencia enriquecerora",
+        "Perdí la conexión con el mundo exterior", "Sentí presión por el tiempo", "Tuve que poner mucho esfuerzo en ello"
+    ];
+
+    const ieqItems = [
+        "Sentí que realmente empatizaba / me identificaba con el juego.",
+        "No sentí ningún apego emocional hacia el juego.",
+        "Estaba interesado/a en ver cómo progresarían los acontecimientos del juego.",
+        "No me interesaba saber qué pasaría después en el juego.",
+        "Estaba en vilo por saber si ganaría o perdería el juego.",
+        "No me importaba si ganaba o perdía el juego.",
+        "A veces me descubría tan involucrado/a con el juego que quería hablarle directamente al juego.",
+        "No me descubrí tan atrapado/a por el juego como para querer hablarle directamente al juego.",
+        "No me gustaron los gráficos ni las imágenes del juego.",
+        "Jugar al juego no fue divertido.",
+        "Los controles no eran fáciles de aprender.",
+        "No hubo ningún aspecto de los controles que fuera especialmente frustrante de dominar.",
+        "Llegué a perder la noción de que estaba usando unos controles.",
+        "Los controles no eran invisibles para mí.",
+        "Me sentí viajando directamente a través del juego según mi propia voluntad.",
+        "No me sentí como si me moviera a través del juego según mi propia voluntad.",
+        "Era como si pudiera interactuar con el mundo del juego de la misma manera que en el mundo real.",
+        "Interactuar con el mundo del juego no se sentía tan real para mí como lo sería en el mundo real.",
+        "Era consciente de mi entorno.",
+        "Todavía me sentía conectado/a al mundo real.",
+        "En ese momento, el juego era mi única preocupación.",
+        "Los pensamientos y preocupaciones cotidianas seguían estando muy presentes en mi mente.",
+        "No sentí el impulso en ningún momento de dejar de jugar y ver qué pasaba a mi alrededor.",
+        "Tenía interest por saber qué podía estar pasando a mi alrededor.",
+        "No me sentía en el mundo real, sino en el mundo del juego.",
+        "Todavía me sentía como si estuviera en el mundo real mientras jugaba.",
+        "Al jugar al juego, el tiempo parecía pasar muy despacio.",
+        "¿Qué tan inmerso/a te sentiste?"
+    ];
+
+    const additionalItems = [
+        "Lo disfruté / Disfruté jugando al juego",
+        "Era estéticamente agradable / Disfruté de los gráficos y las imágenes del juego",
+        "Perdí la conexión con el mundo exterior / Me sentí desconectado(a) del mundo exterior",
+        "Olvidé todo lo que me rodeaba / No era consciente de lo que ocurría a mi alrededor",
+        "Perdí la noción del tiempo / Para mí, sentí que había pasado muy poco tiempo"
+    ];
+
+    function renderAllQuestions() {
+        // Render GEQ
+        let geqHtml = '';
+        geqItems.forEach((item, index) => {
+            const qNum = index + 1;
+            geqHtml += `<div class="question-group"><span class="question-text">GEQ ${qNum}. ${item}</span><div class="options-scale">`;
+            for (let i = 0; i <= 4; i++) { geqHtml += `<label><input type="radio" name="GEQ_Q${qNum}" value="${i}" required> ${i}</label>`; }
+            geqHtml += `</div></div>`;
+        });
+        document.getElementById('geq-questions').innerHTML = geqHtml;
+
+        // Render IEQ (Mantiene intacta la lógica para que la 28 sea input de texto)
+        let ieqHtml = '';
+        ieqItems.forEach((item, index) => {
+            const qNum = index + 1;
+            ieqHtml += `<div class="question-group"><span class="question-text">IEQ ${qNum}. ${item}</span>`;
+
+                ieqHtml += `<div class="options-scale">`;
+                for (let i = 1; i <= 5; i++) { ieqHtml += `<label><input type="radio" name="IEQ_Q${qNum}" value="${i}" required> ${i}</label>`; }
+                ieqHtml += `</div>`;
+            
+            ieqHtml += `</div>`;
+        });
+        document.getElementById('ieq-questions').innerHTML = ieqHtml;
+
+        // Render Adicionales
+        let addHtml = '';
+        additionalItems.forEach((item, index) => {
+            const qNum = index + 1;
+            addHtml += `<div class="question-group"><span class="question-text">Adicional ${qNum}. ${item}</span><div class="options-scale">`;
+            for (let i = 1; i <= 5; i++) { addHtml += `<label><input type="radio" name="ADD_Q${qNum}" value="${i}" required> ${i}</label>`; }
+            addHtml += `</div></div>`;
+        });
+        document.getElementById('additional-questions').innerHTML = addHtml;
+    }
+
+    renderAllQuestions();
+
+    function downloadCSV() {
+        const form = document.getElementById('gameExperienceForm');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        const formData = new FormData(form);
+        let csvContent = "Pregunta,Valor\n";
+        function escapeCSV(text) { return (text && (text.includes(',') || text.includes('"') || text.includes('\n'))) ? '"' + text.replace(/"/g, '""') + '"' : text; }
+        
+        csvContent += `${escapeCSV("GEQ: ¿A cuál experimento corresponde este cuestionario?")},${escapeCSV(formData.get('GEQ_Experimento'))}\n`;
+        geqItems.forEach((item, index) => { csvContent += `${escapeCSV(`GEQ ${index + 1}: ${item}`)},${escapeCSV(formData.get(`GEQ_Q${index + 1}`))}\n`; });
+        ieqItems.forEach((item, index) => { csvContent += `${escapeCSV(`IEQ ${index + 1}: ${item}`)},${escapeCSV(formData.get(`IEQ_Q${index + 1}`))}\n`; });
+        additionalItems.forEach((item, index) => { csvContent += `${escapeCSV(`Adicional ${index + 1}: ${item}`)},${escapeCSV(formData.get(`ADD_Q${index + 1}`))}\n`; });
+        
+        // Incluir las observaciones en el respaldo CSV si el usuario escribió algo
+        const obsValue = formData.get('Observaciones_Generales');
+        if (obsValue) { csvContent += `${escapeCSV("Observaciones Generales")},${escapeCSV(obsValue)}\n`; }
+
+        const encodedUri = 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURIComponent(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "respuestas_cuestionario.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // Credenciales extraídas de tu base de datos lista
+    const firebaseConfig = {
+        apiKey: "llave",
+        authDomain: "bdencuesta-80273.firebaseapp.com",
+        databaseURL: "https://bdencuesta-80273-default-rtdb.firebaseio.com",
+        projectId: "bdencuesta-80273",
+        storageBucket: "bdencuesta-80273.firebasestorage.app",
+        messagingSenderId: "377637713603",
+        appId: "1:377637713603:web:41be91a967d75e06e85476",
+        measurementId: "G-SK0129FDE3"
+    };
+
+    try {
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.uploadToFirebase = function() {
+            const form = document.getElementById('gameExperienceForm');
+            if (!form.checkValidity()) { form.reportValidity(); return; }
+            const formData = new FormData(form);
+            
+            const registroData = {
+                "fecha_envio": Date.now(),
+                "experimento_tipo": formData.get('GEQ_Experimento'),
+                "observaciones_generales": formData.get('Observaciones_Generales') || "" // Se guarda como texto en la base de datos
+            };
+
+            for (let i = 1; i <= 33; i++) { registroData[`geq_q${i}`] = parseInt(formData.get(`GEQ_Q${i}`), 10); }
+            for (let i = 1; i <= 28; i++) { 
+                const val = formData.get(`IEQ_Q${i}`);
+                registroData[`ieq_q${i}`] = (i === 28) ? val : parseInt(val, 10); 
+            }
+            for (let i = 1; i <= 5; i++) { registroData[`add_q${i}`] = parseInt(formData.get(`ADD_Q${i}`), 10); }
+
+            const respuestasRef = ref(database, 'respuestas_cuestionarios');
+            const nuevoRegistroRef = push(respuestasRef);
+
+            set(nuevoRegistroRef, registroData)
+                .then(() => { alert("¡Datos enviados con éxito a Firebase!"); form.reset(); })
+                .catch((err) => { alert("Error de Firebase: " + err.message); });
+        };
+    } catch(e) {
+        window.uploadToFirebase = function() {
+            alert("No se puede conectar a Firebase. Si estás abriendo el archivo localmente como file:///, recuerda usar la extensión Live Server de VS Code o subir tu archivo HTML a un servidor.");
+        };
+    }
+</script>
+</body>
+</html>

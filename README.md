@@ -66,8 +66,6 @@ demo del modelo
 https://youtu.be/7jKPCAtoC8Y
 
 
-
-
 ## Intruscciones de instalación
 
 Instalar dependencias: ollama, steam, python e Inifitode 2
