@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
 # Importamos los componentes de video nativos de Qt
 from PyQt6.QtMultimedia import QMediaPlayer
 from PyQt6.QtMultimediaWidgets import QVideoWidget
+import traceback
 
 os.environ["FFMPEG_LOG_LEVEL"] = "quiet"
 os.environ["QT_LOGGING_RULES"] = "*.debug=false;*.info=false;*.warning=false"
@@ -111,8 +112,6 @@ class Model_manager(QMainWindow):
         self.timer_reloj.timeout.connect(self.actualizar_temporizador)
         self.timer_reloj.start(1000)
 
-        # Cargar e iniciar el primer video
-        self.cargar_y_reproducir(self.video_actual)
         
         # Tamaño inicial estándar
         self.resize(1280, 780)
@@ -137,6 +136,7 @@ class Model_manager(QMainWindow):
             print(f"❌ ERROR DE ARCHIVO: No se encuentra el video en el sistema.")
             print(f"   -> Ruta intentada: {ruta_absoluta}")
             print(f"   -> Carpeta de ejecución actual: {os.getcwd()}")
+            traceback.print_stack()
             
             # Rastreador de errores en el nombre/extensión:
             if not ruta_absoluta.lower().endswith('.mp4'):
@@ -197,10 +197,3 @@ class Model_manager(QMainWindow):
         else:
             self.lbl_timer.setText("00:00")
 
-
-if __name__ == "__main__":
-    # Necesitas instalar en terminal: pip install PyQt6 PyQt6-Multimedia
-    app = QApplication(sys.argv)
-    ex = Model_manager("idle.mp4")
-    ex.show()
-    sys.exit(app.exec())

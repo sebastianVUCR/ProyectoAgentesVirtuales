@@ -67,7 +67,7 @@ class WhisperSTTContinuo:
                     audio_acumulado = []
 
     # ========================================================
-    # HILO 2: PROCESAMIENTO (Ahora integrado y limpio)
+    # HILO 2: PROCESAMIENTO
     # ========================================================
     def _hilo_procesamiento(self, language):
         fs = 16000

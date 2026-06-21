@@ -8,7 +8,7 @@ cd .\AgenteVirtual\
 python -m venv env
 
 #activar ambiente virtual
-.\env\Scripts\activate.bat
+.\venv\Scripts\activate
 
 python.exe -m pip install --upgrade pip
 python -m pip install --upgrade pip setuptools wheel

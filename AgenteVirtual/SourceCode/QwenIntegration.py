@@ -108,9 +108,8 @@ El número en el centro de la figura indica el Nivel de la Torre (rango normal: 
 NOTA CRÍTICA: El "Nivel de la Torre" es un parámetro táctico independiente. No lo confundas nunca con el "Nivel de la Historia" o progreso general del jugador.
 NOTA CRÍTICA: NUNCA uses asteríscos o negritas.
 """
-
+#MODELO_IA = "qwen3.5:2b"
 MODELO_IA = "qwen2.5vl:7b-q4_K_M"
-#MODELO_IA = "qwen2.5vl:7b"
 
 # VARIABLE ÚNICA DE CONFIGURACIÓN GLOBAL (Optimizado para tu RTX 3060)
 OPCIONES_HARDWARE = {

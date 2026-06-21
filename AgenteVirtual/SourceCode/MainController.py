@@ -13,6 +13,9 @@ from QwenIntegration import AgenteVirtual, MODELO_IA, CONTEXTO_AGENTE_COMPANIA, 
 from FasterWhisperIntegration import WhisperSTTContinuo
 from TTS.PiperIntegration import ReproductorTTS
 from dataCollector import generate_data
+from Test.AgenteVirtualMock import AgenteVirtualMock
+
+ENABLE_OLLAMA_MODEL = True
 
 class Main_controller:
     def __init__(self):
@@ -27,10 +30,13 @@ class Main_controller:
         # 2. Inicializar los componentes pasándole la cola al STT
         self.tts = ReproductorTTS()
         
-        self.agente_llm = AgenteVirtual(
-            modelo=MODELO_IA,
-            contexto=self.modo
-        )
+        if ENABLE_OLLAMA_MODEL:
+            self.agente_llm = AgenteVirtual(
+                modelo=MODELO_IA,
+                contexto=self.modo
+            )
+        else:
+            self.agente_llm = AgenteVirtualMock()
         
         # Pasamos self.cola_transcripciones al inicializador
         self.stt = WhisperSTTContinuo(
@@ -52,16 +58,12 @@ class Main_controller:
         if coincidencia:
             animacion_encontrada = coincidencia.group(1)
             print(f"¡Animación detectada y enviada al avatar!: {animacion_encontrada}")
-
-            # CORRECCIÓN: Pasamos el string 'animacion_encontrada', no el objeto match entero
-            if self.model_manager:
-                self.model_manager.reproducir_animacion(animacion_encontrada)
-            
-            # Remover la etiqueta y los espacios en blanco sobrantes del inicio del texto
+            nombre_animacion = animacion_encontrada
             texto_limpio = re.sub(patron_animacion, "", texto_respuesta)
-            return texto_limpio
-        
-        return texto_respuesta
+            return texto_limpio, nombre_animacion
+        else:
+            nomre_animacion = "talk"
+        return texto_respuesta, nomre_animacion
     
     def solicitar_cambio_modo(self, modo):
         self.agente_llm.establecer_contexto(modo)
@@ -75,7 +77,17 @@ class Main_controller:
 
     def bucle_interaccion_principal(self):
         """Maneja el flujo lógico de eventos de forma asíncrona en su propio hilo."""
+
+        
+
+        t_capturas = threading.Thread(target=generate_data, args=(self.modo,))
+        t_capturas.daemon = True
+        t_capturas.start()
+
+
         print("\n🤖 El Agente Alex está escuchando... (Presiona Ctrl+C en consola para salir)")
+
+
 
         self.model_manager.reproducir_animacion("idle")
         while self.ejecutando:
@@ -92,16 +104,19 @@ class Main_controller:
             print(f"🧠 Consultando a Qwen ({MODELO_IA})...")
             inicio_ia = time.perf_counter()
             texto_usuario = "El usuario te está diciendo lo siguiente, si es una pregunta respóndele: " + texto_usuario
+            print(texto_usuario)
+            
             respuesta_ia = self.agente_llm.enviar_mensaje(texto_usuario, archivos=listar_imagenes_recientes())
             
             fin_ia = time.perf_counter()
             print(f"🤖 Alex: {respuesta_ia} [Tiempo: {fin_ia - inicio_ia:.2f}s]")
             
-            respuesta_ia = self.procesar_animaciones(respuesta_ia)
+            print(f"Alex dice: {respuesta_ia}")
+            respuesta_ia, animacion_inicial = self.procesar_animaciones(respuesta_ia)
+            print(f"Alex dice: {respuesta_ia}")
             
             # Enviar a Piper TTS
-            if self.model_manager:
-                self.tts.reproducir_texto(respuesta_ia, self.model_manager.reproducir_animacion)       
+            self.tts.reproducir_texto(respuesta_ia, self.model_manager.reproducir_animacion, animacion_inicial)       
             
             self.cola_transcripciones.task_done()
             self.agregar_a_log("Logs/logs.txt", f"Alex: {respuesta_ia}")
@@ -111,31 +126,33 @@ class Main_controller:
         app = QApplication(sys.argv)
         
         self.model_manager = Model_manager(
-            "idle.mp4", 
-            "pantalla_negra.mp4", 
+            "idle", 
+            "pantalla_negra", 
             self.solicitar_cambio_modo, 
             self.solicitar_cambio_modo
         )
         self.model_manager.show()
+
+        if ENABLE_OLLAMA_MODEL:
+            try:
+                self.agente_llm.asegurar_modelo_activo() # Tu limpieza del LLM
+            except Exception as e:
+                print(f"[Aviso] No se pudo iniciar el LLM: {e}")
         
-        # 2. Lanzar los hilos del STT de fondo
         t_grabar = threading.Thread(target=self.stt._hilo_grabacion, args=(0.013, 1.5))
         t_procesar = threading.Thread(target=self.stt._hilo_procesamiento, args=("es",))
-        t_capturas = threading.Thread(target=generate_data, args=(self.modo,))
-        
-        # 3. Lanzar el bucle de interacción de la IA en un hilo secundario
-        t_interaccion = threading.Thread(target=self.bucle_interaccion_principal)
-        
-        # Muy importante: Todos como daemon para que el SO los mate si el hilo principal muere
         t_grabar.daemon = True
         t_procesar.daemon = True
-        t_capturas.daemon = True
+        t_grabar.start()
+        t_procesar.start()
+
+        t_interaccion = threading.Thread(target=self.bucle_interaccion_principal)        
+        
+
         t_interaccion.daemon = True
         
         # Arrancamos todos los procesos paralelos
-        t_grabar.start()
-        t_procesar.start()
-        t_capturas.start()
+        
         t_interaccion.start()
         
         print("📸 [DataCollector] Hilo asíncrono de capturas iniciado.")
@@ -149,14 +166,8 @@ class Main_controller:
         print("\n🛑 Ventana cerrada. Apagando el controlador central y limpiando hilos...")
         self.ejecutando = False       # Rompe el while de tu hilo de interacción
         self.stt.ejecutando = False    # Rompe los whiles de FasterWhisper si los tiene
-        
-        try:
-            self.agente_llm.asegurar_modelo_activo() # Tu limpieza del LLM
-        except Exception as e:
-            print(f"[Aviso] No se pudo limpiar el LLM: {e}")
             
         print("👋 Sistema cerrado correctamente. ¡Adiós!")
-        sys.exit(0) # Forzar el cierre definitivo del proceso de Python
 
     def leer_configuracion(self, etiqueta="modo"):
         ruta_config = "config.json"

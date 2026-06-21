@@ -5,6 +5,7 @@ import sounddevice as sd
 import soundfile as sf
 from datetime import datetime
 import time
+import traceback
 
 TEST_STRING = """
     Hola, ¿cómo estás? Me alegra verte de nuevo. 
@@ -39,7 +40,7 @@ class ReproductorTTS:
         # Variable para controlar el hilo de reproducción
         self.hilo_reproduccion = None
 
-    def reproducir_texto(self, texto_input, detener_animacion=None):
+    def reproducir_texto(self, texto_input, reproducir_animacion=None, animacion_inicial=None):
         """Genera el audio con Piper en la carpeta 'audios' y lo reproduce en segundo plano."""
         self.detener()
 
@@ -80,11 +81,13 @@ class ReproductorTTS:
             )
             print(f"¡Audio generado con éxito! Guardado en: {self.archivo_actual}")
             
+            
             # Leer el archivo generado
             data, fs = sf.read(self.archivo_actual)
+            reproducir_animacion(animacion_inicial)
             
             # Iniciamos la reproducción en un hilo separado
-            self.hilo_reproduccion = threading.Thread(target=self._reproducir_async, args=(data, fs, self.archivo_actual, detener_animacion))
+            self.hilo_reproduccion = threading.Thread(target=self._reproducir_async, args=(data, fs, self.archivo_actual, reproducir_animacion))
             self.hilo_reproduccion.daemon = True
             self.hilo_reproduccion.start()
 
@@ -96,14 +99,17 @@ class ReproductorTTS:
 
     def _reproducir_async(self, data, fs, ruta_archivo, detener_animacion=None):
         """Método interno que corre en el hilo secundario."""
-        print("-> Reproduciendo audio... ")
-        sd.play(data, fs)
-        sd.wait()
-        detener_animacion("idle")
-        print("-> Reproducción finalizada por completo.")
-        
-        # Al terminar de reproducir de forma natural, borramos el archivo de la carpeta /audios
-        self._eliminar_archivo_en_segundo_plano(ruta_archivo)
+        try:
+            print("-> Reproduciendo audio... ")
+            sd.play(data, fs)
+            sd.wait()
+            detener_animacion("idle")
+            print("-> Reproducción finalizada por completo.")
+            
+            # Al terminar de reproducir de forma natural, borramos el archivo de la carpeta /audios
+            self._eliminar_archivo_en_segundo_plano(ruta_archivo)
+        except Exception as e:
+            print(f"Ocurrió un error inesperado al generar: {e}")
 
     def detener(self):
         """Detiene inmediatamente cualquier audio que se esté reproduciendo."""
