@@ -70,7 +70,10 @@ https://youtu.be/7jKPCAtoC8Y
 
 Instalar dependencias: ollama, steam, python e Inifitode 2
 
-Ejecutar setup.bat en la raíz si es necesario establecer la variables de ambiente de ollama y del manejo de memoria.
+Ejecutar setup_variables_de_ambiente.bat en la carpeta AgenteVirtual si es necesario establecer la variables de ambiente de ollama y del manejo de memoria.
+
+Si desea realizar la instalación automática entonces ejecute el archivo setup.bat en la carpeta AgenteVirtual, de los contrario ingrese a la carpeta AgenteVirtual y siga la siguientes instrucciones
+
 
 ```
 python -m venv env
