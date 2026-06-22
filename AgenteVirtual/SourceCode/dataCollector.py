@@ -65,11 +65,6 @@ def generate_data(modo="compania"):
         
         file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
         capturar_pantalla(nombre_archivo=file_name, modo=modo)
-        time.sleep(sleep_time)
-        
-        
-        file_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
-        capturar_pantalla(nombre_archivo=file_name, modo=modo)
 
         time.sleep(sleep_time)
 

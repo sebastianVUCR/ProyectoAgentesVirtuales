@@ -173,6 +173,7 @@ class Model_manager(QMainWindow):
         animacion = f"Modelo/{animacion}"
         animacion = f"{animacion}.mp4"
         self.cargar_y_reproducir(animacion)
+        pass
 
     def accion_compania(self):
         """Reinicia el temporizador visual y notifica al controlador."""
