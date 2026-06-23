@@ -85,7 +85,7 @@ PROHIBIDO mencionar: Multishot, Minigun, Venom, Blast, Freezing y Antiair.
 
 [GUÍA POR NIVEL TORRES Y ENEMIGOS]
 Basic: Alta eficacia contra enemigos regulares verdes.
-Sniper nivel 1.2: Pon una torre Basic justo en la esquina interior de la primera curva grande. Esto maximiza su tiempo de disparo mientras los enemigos giran a su alrededor. Las torres Sniper son ideal para eliminar enemigos naranjas.
+Sniper nivel 1.2: Pon una torre Basic justo en la esquina interior de la primera curva grande. Esto maximiza su tiempo de disparo mientras los enemigos giran a su alrededor. Las torres Sniper son ideal para eliminar enemigos naranjas. Coloca torres sniper en los exteriores y en el centro cuando las ocupes.
 Cannon nivel 1.3: Usa torres Basic (configurada en modo de ataque First o Fastest) y Sniper si necesitas daño a larga distancia. Usa torres Cannon para limpiar grupos de enemigos amarillos.
 nivel 1.4: El Cañón dispara lento pero su daño explosivo limpia grupos enteros. Configura el Cañón en Random (Aleatorio) o Strongest (Más fuerte) para que apunte al centro del grupo y la explosión dañe a la mayor cantidad de enemigos posibles
 nivel 1.5: Al principio, invierte en 2 torres Basic bien ubicadas en las primeras curvas para asegurar los ingresos tempranos. Coloca un Cañón en el centro para ablandar los grupos compactos y usa una Sniper al fondo.
@@ -100,7 +100,7 @@ Cannon y Basic: Configurar en First para limpiar eficientemente.
 [REGLA CRÍTICA DE ANIMACIÓN - PRIORIDAD MÁXIMA]
 Dispones de exactamente dos (2) comandos de animación visual que debes ejecutar según el contexto emocional de la interacción para usar estos comando debe poner las etiquetas [wave] o [happy] al princpio del mensaje de respuestas:
 
-[wave] (Gesto de saludo con la mano): Úsalo únicamente al inicio de la conversación o cuando saludes al usuario, siempre lo debes usar en estas dos ocasiones.
+[wave] (Gesto de saludo con la mano): Úsalo únicamente cuando el usuario te salude.
 
 [happy] (Gesto de felicidad/celebración): Úsalo al inicio de tus respuestas cuando el usuario logre superar una oleada, realice una buena jugada, o cuando sea oportuno celebrar un avance en la partida de Infinitode 2, el usuario te mencione que realizó un logro o completo una meta.
 
@@ -119,7 +119,9 @@ OPCIONES_HARDWARE = {
     "num_gpu": 99,         # Bloqueo estricto a los núcleos CUDA de la GPU
     "temperature": 0.2,    # Respuestas rápidas y sin dudas
     "top_p": 0.2,          # Elimina palabras basura y alucinaciones
-    "num_predict": 160      # Respuestas directas de máximo 2 o 3 líneas (Ahorra segundos)
+    "num_predict": 160,      # Respuestas directas de máximo 2 o 3 líneas (Ahorra segundos)
+    "repeat_penalty" : 1.2,
+    "repeat_last_n" : 60
 }
 
 
@@ -141,7 +143,7 @@ class AgenteVirtual:
             contexto = CONTEXTO_AGENTE_COMPANIA 
             print("modo compania activado por defecto")
         self.contexto_base = {
-            'role': 'system',
+            'role': 'user',
             'content': contexto
         }
         self.historial_mensajes = [self.contexto_base]
@@ -251,7 +253,7 @@ class AgenteVirtual:
             
             contenido_respuesta = respuesta_ollama['message']['content']
             self.historial_mensajes.append({
-                'role': 'assistant',
+                'role': 'user',
                 'content': contenido_respuesta
             })
             print(f"historial {self.historial_mensajes}")

@@ -56,6 +56,15 @@ El sistema se compone de las siguientes herramientas y versiones integradas:
 ---
 
 
+## Requisitos de Hardware
+
+
+Para garantizar un rendimiento óptimo del sistema de interacción con el agente virtual, se recomiendan las siguientes especificaciones técnicas:
+
+Memoria RAM: Se requiere un mínimo de 16 GB, aunque se recomienda contar con 24 GB para asegurar la estabilidad durante la ejecución simultánea del videojuego y los módulos de IA.
+
+Tarjeta de video: Se recomienda una tarjeta gráfica con arquitectura moderna equivalente o superior a una NVIDIA GeForce RTX 4060, necesaria para el procesamiento gráfico del entorno y la aceleración de modelos de lenguaje.
+
 ## Enlace de videos de la segunda y tercera entrega
 
 

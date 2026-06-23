@@ -65,7 +65,7 @@
         .options-scale input[type="radio"] {
             margin-right: 6px;
         }
-        select, input[type="text"], textarea {
+        select, textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #cbd5e0;
@@ -118,7 +118,7 @@
     
     <form id="gameExperienceForm">
 
-        <h2>Cuestionario de Experiencia de Juego – Módulo Central</h2>
+        <h2>Cuestionario de Experiencia de Juego – Módulo Central (GEQ)</h2>
         <div class="question-group">
             <span class="question-text">¿A cuál experimento corresponde este cuestionario?</span>
             <select name="GEQ_Experimento" required>
@@ -130,21 +130,20 @@
         </div>
 
         <div class="info-block">
-            Por favor, indica cómo te sentiste mientras jugabas al juego para cada uno de los elementos, en la siguiente escala:<br>
+            Por favor, indica cómo te sentiste mientras jugabas al juego para cada uno de los elementos del GEQ, en la siguiente escala:<br>
             <strong>0</strong> = para nada | <strong>1</strong> = un poco | <strong>2</strong> = moderadamente | <strong>3</strong> = bastante | <strong>4</strong> = extremadamente
         </div>
 
         <div id="geq-questions"></div>
 
-        <h2>Inmersive Experience Questionnaire (IEQ)</h2>
+        <h2>Immersive Experience Questionnaire (IEQ)</h2>
         <div class="info-block">
-            Por favor, responde a las siguientes preguntas indicando tu nivel de acuerdo o la opción que mejor describa tu experiencia.
+            Por favor, responde a las siguientes preguntas indicando tu nivel de acuerdo o la opción que mejor describa tu experiencia.<br>
+            Escala del <strong>1</strong> (Para nada / Totalmente en desacuerdo) al <strong>5</strong> (Extremadamente / Totalmente de acuerdo).
         </div>
         <div id="ieq-questions"></div>
 
-        <h2>Preguntas Adicionales</h2>
-        <div id="additional-questions"></div>
-
+        <h2>Observaciones Finales</h2>
         <div class="question-group" style="border-bottom: none;">
             <span class="question-text">Observaciones Generales (Opcional)</span>
             <textarea name="Observaciones_Generales" placeholder="Escribe aquí cualquier comentario, sugerencia o problema que hayas tenido durante el juego..."></textarea>
@@ -163,57 +162,53 @@
         "Me sentí satisfecho/a", "Me sentí habilidoso/a", "Me interesó la historia del juego",
         "Pensé que era divertido", "Estaba completamente absorto/a con el juego", "Me sentí feliz",
         "Me puso de mal humor", "Pensé en otras cosas", "Lo encontré cansado / tedioso",
-        "Me sentí competente", "Pensé que era difícil", "Era estéthetically agradable",
+        "Me sentí competente", "Pensé que era difícil", "Era estéticamente agradable",
         "Olvidé todo lo que me rodeaba", "Me sentí bien", "Se me daba bien",
         "Me sentí aburrido/a", "Me sentí exitoso/a", "Me sentí imaginativo/a",
         "Sentí que podía explorar cosas", "Lo disfruté", "Fui rápido/a en alcanzar los objetivos del juego",
-        "Me sentí molesto/a / enfadado/a", "Me sentí presiónado/a", "Me sentí irritable",
+        "Me sentí molesto/a / enfadado/a", "Me sentí presionado/a", "Me sentí irritable",
         "Perdí la noción del tiempo", "Me sentí desafiado/a", "Lo encontré impresionante",
-        "Estaba profundamente concentrado/a en el juego", "Me sentí frustrado/a", "Se sintió como una experiencia enriquecerora",
+        "Estaba profundamente concentrado/a en el juego", "Me sentí frustrado/a", "Se sintió como una experiencia enriquecedora",
         "Perdí la conexión con el mundo exterior", "Sentí presión por el tiempo", "Tuve que poner mucho esfuerzo en ello"
     ];
 
+    // Mapeo exacto de tus 31 preguntas en inglés traducidas al español
     const ieqItems = [
-        "Sentí que realmente empatizaba / me identificaba con el juego.",
-        "No sentí ningún apego emocional hacia el juego.",
-        "Estaba interesado/a en ver cómo progresarían los acontecimientos del juego.",
-        "No me interesaba saber qué pasaría después en el juego.",
-        "Estaba en vilo por saber si ganaría o perdería el juego.",
-        "No me importaba si ganaba o perdía el juego.",
-        "A veces me descubría tan involucrado/a con el juego que quería hablarle directamente al juego.",
-        "No me descubrí tan atrapado/a por el juego como para querer hablarle directamente al juego.",
-        "No me gustaron los gráficos ni las imágenes del juego.",
-        "Jugar al juego no fue divertido.",
-        "Los controles no eran fáciles de aprender.",
-        "No hubo ningún aspecto de los controles que fuera especialmente frustrante de dominar.",
-        "Llegué a perder la noción de que estaba usando unos controles.",
-        "Los controles no eran invisibles para mí.",
-        "Me sentí viajando directamente a través del juego según mi propia voluntad.",
-        "No me sentí como si me moviera a través del juego según mi propia voluntad.",
-        "Era como si pudiera interactuar con el mundo del juego de la misma manera que en el mundo real.",
-        "Interactuar con el mundo del juego no se sentía tan real para mí como lo sería en el mundo real.",
-        "Era consciente de mi entorno.",
-        "Todavía me sentía conectado/a al mundo real.",
-        "En ese momento, el juego era mi única preocupación.",
-        "Los pensamientos y preocupaciones cotidianas seguían estando muy presentes en mi mente.",
-        "No sentí el impulso en ningún momento de dejar de jugar y ver qué pasaba a mi alrededor.",
-        "Tenía interest por saber qué podía estar pasando a mi alrededor.",
-        "No me sentía en el mundo real, sino en el mundo del juego.",
-        "Todavía me sentía como si estuviera en el mundo real mientras jugaba.",
-        "Al jugar al juego, el tiempo parecía pasar muy despacio.",
-        "¿Qué tan inmerso/a te sentiste?"
-    ];
-
-    const additionalItems = [
-        "Lo disfruté / Disfruté jugando al juego",
-        "Era estéticamente agradable / Disfruté de los gráficos y las imágenes del juego",
-        "Perdí la conexión con el mundo exterior / Me sentí desconectado(a) del mundo exterior",
-        "Olvidé todo lo que me rodeaba / No era consciente de lo que ocurría a mi alrededor",
-        "Perdí la noción del tiempo / Para mí, sentí que había pasado muy poco tiempo"
+        "¿Hasta qué punto el juego mantuvo tu atención?",
+        "¿Hasta qué punto sentiste que estabas concentrado/a en el juego?",
+        "¿Cuánto esfuerzo pusiste en jugar el juego?",
+        "¿Sentiste que estabas dando lo mejor de ti?",
+        "¿Hasta qué punto perdiste la noción del tiempo?",
+        "¿Hasta qué punto te sentías conscientemente consciente de estar en el mundo real mientras jugabas?",
+        "¿Hasta qué punto olvidaste tus preocupaciones cotidianas?",
+        "¿Hasta qué punto eras consciente de ti mismo/a en tu entorno?",
+        "¿Hasta qué punto notaste las cosas que sucedían a tu alrededor?",
+        "¿Sentiste el impulso en algún momento de dejar de jugar y ver qué pasaba a mi alrededor?",
+        "¿Hasta qué punto sentiste que estabas interactuando con el entorno del juego?",
+        "¿Hasta qué punto te sentiste separado/a del entorno del mundo real?",
+        "¿Hasta qué punto sentiste que el juego era algo que estabas experimentando, en lugar de algo que solo estabas haciendo?",
+        "¿Hasta qué punto tu sensación de estar en el entorno del juego fue más fuerte que tu sensación de estar en el mundo real?",
+        "¿En algún momento te descubriste tan involucrado/a que no eras consciente de que estabas usando los controles?",
+        "¿Hasta qué punto te sentiste como si te movieras a través del juego según tu propia voluntad?",
+        "¿Hasta qué punto encontraste el juego desafiante?",
+        "¿Hubo momentos durante el juego en los que simplemente querías rendirte?",
+        "¿Hasta qué punto te sentiste motivado/a mientras jugabas?",
+        "¿Hasta qué punto encontraste el juego fácil?",
+        "¿Hasta qué punto sentiste que estabas progresando hacia el final del juego?",
+        "¿Qué tan bien crees que te desempeñaste en el juego?",
+        "¿Hasta qué punto te sentiste emocionalmente ligado/a al juego?",
+        "¿Hasta qué punto estabas interesado/a en ver cómo progresarían los acontecimientos del juego?",
+        "¿Qué tanto querías \"ganar\" el juego?",
+        "¿Estabas en vilo por saber si ganarías o perderías el juego?",
+        "¿En algún momento te descubriste tan involucrado/a que querías hablarle directamente al juego?",
+        "¿Hasta qué punto disfrutaste de los gráficos y las imágenes?",
+        "¿Cuánto dirías que disfrutaste jugar al juego?",
+        "Al ser interrumpido/a, ¿te decepcionó que el juego hubiera terminado?",
+        "¿Te gustaría volver a jugar este juego?"
     ];
 
     function renderAllQuestions() {
-        // Render GEQ
+        // Render GEQ (Escala 0-4)
         let geqHtml = '';
         geqItems.forEach((item, index) => {
             const qNum = index + 1;
@@ -223,29 +218,15 @@
         });
         document.getElementById('geq-questions').innerHTML = geqHtml;
 
-        // Render IEQ (Mantiene intacta la lógica para que la 28 sea input de texto)
+        // Render IEQ (Escala 1-5 para las 31 preguntas)
         let ieqHtml = '';
         ieqItems.forEach((item, index) => {
             const qNum = index + 1;
-            ieqHtml += `<div class="question-group"><span class="question-text">IEQ ${qNum}. ${item}</span>`;
-
-                ieqHtml += `<div class="options-scale">`;
-                for (let i = 1; i <= 5; i++) { ieqHtml += `<label><input type="radio" name="IEQ_Q${qNum}" value="${i}" required> ${i}</label>`; }
-                ieqHtml += `</div>`;
-            
-            ieqHtml += `</div>`;
+            ieqHtml += `<div class="question-group"><span class="question-text">IEQ ${qNum}. ${item}</span><div class="options-scale">`;
+            for (let i = 1; i <= 5; i++) { ieqHtml += `<label><input type="radio" name="IEQ_Q${qNum}" value="${i}" required> ${i}</label>`; }
+            ieqHtml += `</div></div>`;
         });
         document.getElementById('ieq-questions').innerHTML = ieqHtml;
-
-        // Render Adicionales
-        let addHtml = '';
-        additionalItems.forEach((item, index) => {
-            const qNum = index + 1;
-            addHtml += `<div class="question-group"><span class="question-text">Adicional ${qNum}. ${item}</span><div class="options-scale">`;
-            for (let i = 1; i <= 5; i++) { addHtml += `<label><input type="radio" name="ADD_Q${qNum}" value="${i}" required> ${i}</label>`; }
-            addHtml += `</div></div>`;
-        });
-        document.getElementById('additional-questions').innerHTML = addHtml;
     }
 
     renderAllQuestions();
@@ -260,9 +241,7 @@
         csvContent += `${escapeCSV("GEQ: ¿A cuál experimento corresponde este cuestionario?")},${escapeCSV(formData.get('GEQ_Experimento'))}\n`;
         geqItems.forEach((item, index) => { csvContent += `${escapeCSV(`GEQ ${index + 1}: ${item}`)},${escapeCSV(formData.get(`GEQ_Q${index + 1}`))}\n`; });
         ieqItems.forEach((item, index) => { csvContent += `${escapeCSV(`IEQ ${index + 1}: ${item}`)},${escapeCSV(formData.get(`IEQ_Q${index + 1}`))}\n`; });
-        additionalItems.forEach((item, index) => { csvContent += `${escapeCSV(`Adicional ${index + 1}: ${item}`)},${escapeCSV(formData.get(`ADD_Q${index + 1}`))}\n`; });
         
-        // Incluir las observaciones en el respaldo CSV si el usuario escribió algo
         const obsValue = formData.get('Observaciones_Generales');
         if (obsValue) { csvContent += `${escapeCSV("Observaciones Generales")},${escapeCSV(obsValue)}\n`; }
 
@@ -280,7 +259,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // Credenciales extraídas de tu base de datos lista
     const firebaseConfig = {
         apiKey: "llave",
         authDomain: "bdencuesta-80273.firebaseapp.com",
@@ -304,15 +282,13 @@
             const registroData = {
                 "fecha_envio": Date.now(),
                 "experimento_tipo": formData.get('GEQ_Experimento'),
-                "observaciones_generales": formData.get('Observaciones_Generales') || "" // Se guarda como texto en la base de datos
+                "observaciones_generales": formData.get('Observaciones_Generales') || ""
             };
 
+            // Guardar GEQ (1 a 33)
             for (let i = 1; i <= 33; i++) { registroData[`geq_q${i}`] = parseInt(formData.get(`GEQ_Q${i}`), 10); }
-            for (let i = 1; i <= 28; i++) { 
-                const val = formData.get(`IEQ_Q${i}`);
-                registroData[`ieq_q${i}`] = (i === 28) ? val : parseInt(val, 10); 
-            }
-            for (let i = 1; i <= 5; i++) { registroData[`add_q${i}`] = parseInt(formData.get(`ADD_Q${i}`), 10); }
+            // Guardar IEQ adaptado (1 a 31)
+            for (let i = 1; i <= 31; i++) { registroData[`ieq_q${i}`] = parseInt(formData.get(`IEQ_Q${i}`), 10); }
 
             const respuestasRef = ref(database, 'respuestas_cuestionarios');
             const nuevoRegistroRef = push(respuestasRef);
@@ -323,7 +299,7 @@
         };
     } catch(e) {
         window.uploadToFirebase = function() {
-            alert("No se puede conectar a Firebase. Si estás abriendo el archivo localmente como file:///, recuerda usar la extensión Live Server de VS Code o subir tu archivo HTML a un servidor.");
+            alert("No se puede conectar a Firebase. Si estás abriendo el archivo localmente como file:///, recuerda usar la extensión Live Server de VS Code.");
         };
     }
 </script>

@@ -5,7 +5,7 @@
 ejecutar setup.bat en la raíz si es necesario establecer la variables de ambiente de ollama y del manejo de memoria
 cd .\AgenteVirtual\
 
-python -m venv env
+python -m venv venv
 
 #activar ambiente virtual
 .\venv\Scripts\activate
