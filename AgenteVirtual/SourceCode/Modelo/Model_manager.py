@@ -122,6 +122,7 @@ class Model_manager(QMainWindow):
         y la ruta para capturar errores de formato o archivos faltantes.
         """
         print(f"\n[Media Engine] Intentando cargar la fuente: '{ruta_video}'")
+        traceback.print_stack()
         
         # 1. Validación: ¿La ruta está vacía o no es un string?
         if not ruta_video or not isinstance(ruta_video, str):

@@ -111,9 +111,8 @@ class Main_controller:
             fin_ia = time.perf_counter()
             print(f"🤖 Alex: {respuesta_ia} [Tiempo: {fin_ia - inicio_ia:.2f}s]")
             
-            print(f"Alex dice: {respuesta_ia}")
             respuesta_ia, animacion_inicial = self.procesar_animaciones(respuesta_ia)
-            print(f"Alex dice: {respuesta_ia}")
+
             
             # Enviar a Piper TTS
             self.tts.reproducir_texto(respuesta_ia, self.model_manager.reproducir_animacion, animacion_inicial)       
